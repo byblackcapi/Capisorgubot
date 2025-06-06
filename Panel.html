@@ -63,14 +63,13 @@
       background: #000;
       color: var(--accent);
     }
-    /* SIDEBAR */
 .sidebar {
   width: 250px;
   background: rgba(20, 20, 20, 0.95);
   padding: 20px;
   position: fixed;
   top: 0;
-  left: -260px;
+  left: -270px; /* biraz daha içeri çektik */
   height: 100%;
   transition: left 0.3s ease;
   overflow-y: auto;
@@ -78,20 +77,20 @@
   display: flex;
   flex-direction: column;
 
+  /* Her türlü görsel izi kaldırıyoruz */
   border: none !important;
   box-shadow: none !important;
-  outline: none !important; /* özellikle outline kaldırmak için */
-  scrollbar-width: none; /* Firefox için scrollbar gizleme */
+  outline: none !important;
+  scrollbar-width: none;
+  opacity: 0; /* Kapalıyken görünmez */
+  pointer-events: none; /* Tıklanamaz olur */
 }
-.sidebar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari ve Edge için scrollbar gizleme */
+/* Açıldığında görünür ve tıklanabilir olur */
+.sidebar.open {
+  left: 0;
+  opacity: 1;
+  pointer-events: auto;
 }
-    .sidebar.light {
-      background: rgba(240, 240, 240, 0.95);
-    }
-    .sidebar.open {
-      left: 0;
-    }
     .sidebar h3 {
       margin-bottom: 20px;
       color: var(--accent);
