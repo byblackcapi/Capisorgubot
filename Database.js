@@ -243,30 +243,66 @@ function handleQuery(type) {
 // --------------------------
 // Ad Soyad Query Handler (Türkçe karakter desteği var)
 // --------------------------
-function handleAdSoyadQuery() {
-  const ad = document.getElementById('adInput').value.trim();
-  const soyad = document.getElementById('soyadInput').value.trim();
-  const il = document.getElementById('ilInput').value.trim();
-  const resultDiv = document.getElementById('adsoyadResult');
-  if (!ad || !soyad || !il) {
-    resultDiv.innerHTML = "<p style='color:red;'>Tüm alanları doldurun.</p>";
-    return;
-  }
-  resultDiv.innerHTML = '⏳ Sorgulanıyor...';
+async function queryAdSoyad() {
+    const ad = encodeURIComponent(document.getElementById("ad").value.trim());
+    const soyad = encodeURIComponent(document.getElementById("soyad").value.trim());
+    const il = encodeURIComponent(document.getElementById("il").value.trim());
 
-  // encodeURIComponent sayesinde "ü, ç, ğ" vb. karakterler doğru kodlanacak
-  const url = `http://ramowlf.xyz/ramowlf/adsoyad.php?ad=${encodeURIComponent(
-    ad
-  )}&soyad=${encodeURIComponent(soyad)}&il=${encodeURIComponent(il)}`;
+    if (!ad || !soyad || !il) {
+        showToast("Lütfen tüm alanları doldurun.");
+        return;
+    }
 
-  fetch(url)
-    .then((response) => response.text())
-    .then((data) => {
-      resultDiv.innerHTML = `<pre>${data}</pre>`;
-    })
-    .catch((error) => {
-      resultDiv.innerHTML = `<p style='color:red;'>Hata oluştu: ${error}</p>`;
+    const url = `https://seninapi.com/api/adsoyad?ad=${ad}&soyad=${soyad}&il=${il}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Sunucu yanıt vermedi.");
+        }
+
+        const data = await response.json();
+
+        if (data.length === 0) {
+            showToast("Hiçbir sonuç bulunamadı.");
+            return;
+        }
+
+        displayResult(data);
+    } catch (error) {
+        console.error("Sorgu Hatası:", error);
+        showToast("Hata oluştu: " + error.message);
+    }
+}
+
+// Sorgu sonucunu sayfada göster
+function displayResult(data) {
+    const resultDiv = document.getElementById("results");
+    resultDiv.innerHTML = ""; // Önceki sonuçları temizle
+
+    data.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+        card.innerHTML = `
+            <p><strong>Ad Soyad:</strong> ${item.ad} ${item.soyad}</p>
+            <p><strong>TCKN:</strong> ${item.tc}</p>
+            <p><strong>Doğum Tarihi:</strong> ${item.dogum_tarih}</p>
+            <p><strong>İl:</strong> ${item.il}</p>
+        `;
+        resultDiv.appendChild(card);
     });
+}
+
+// Basit toast mesajı gösterici
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 4000);
 }
 
 // --------------------------
