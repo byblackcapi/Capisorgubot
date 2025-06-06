@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAPI TOOL | Panel</title>
+
+  <!-- Manifest for offline support -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- FontAwesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-/v6Ck6QF+Q6zL7vx5w+eZAKtZySYaVO+lLxWozzXUX+S0GJjAwq5o3v1WQSlOZJt7q9s2V+gGJkFxLs0YvAedA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- Chart.js for API usage graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Harici CSS -->
+  <link rel="stylesheet" href="Style.css" />
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login">
+    <div class="login-box" id="loginBox">
+      <h2>Panel Girişi</h2>
+      <input type="text" id="username" placeholder="Kullanıcı Adı" />
+      <input type="password" id="password" placeholder="Şifre" />
+      <button onclick="handleLogin()">Giriş Yap</button>
+      <div id="loader"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+    </div>
+  </div>
+
+  <!-- Menu & Theme Toggles -->
+  <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+  <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Main Wrapper -->
+  <div class="wrapper" id="panel" style="display: none;">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <h3>CAPI TOOL</h3>
+      <a href="#" onclick="showSection('anasayfa')"><i class="fas fa-home"></i><span>Anasayfa</span></a>
+      <a href="#" onclick="showSection('tc')"><i class="fas fa-id-card"></i><span>TC Sorgu</span></a>
+      <a href="#" onclick="showSection('tel')"><i class="fas fa-phone"></i><span>Telefon</span></a>
+      <a href="#" onclick="showSection('isim')"><i class="fas fa-user"></i><span>İsimden</span></a>
+      <a href="#" onclick="showSection('adres')"><i class="fas fa-map-marker-alt"></i><span>Adres Sorgu</span></a>
+      <a href="#" onclick="showSection('plaka')"><i class="fas fa-car"></i><span>Plaka Sorgu</span></a>
+      <a href="#" onclick="showSection('eposta')"><i class="fas fa-envelope"></i><span>E-Posta Sorgu</span></a>
+      <a href="#" onclick="showSection('adsoyad')"><i class="fas fa-user-tag"></i><span>Ad Soyad</span></a>
+      <button class="lang-toggle" id="langToggle">EN</button>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="content">
+      <!-- Anasayfa -->
+      <section id="anasayfa" class="section active">
+        <div class="duyuru">
+          📢 Yeni API eklendi. Artık isimden doğum tarihi sorgusu yapılabilir!
+        </div>
+        <div class="card-container">
+          <div class="card">
+            <h3>🔌 Aktif API</h3>
+            <p id="countApi">4</p>
+          </div>
+          <div class="card">
+            <h3>👤 Kullanıcı</h3>
+            <p id="countUser">12</p>
+          </div>
+          <div class="card">
+            <h3>⭐ Premium</h3>
+            <p id="countPremium">3</p>
+          </div>
+          <div class="card">
+            <h3>📊 Toplam Sorgu</h3>
+            <p id="countQuery">134</p>
+          </div>
+        </div>
+        <canvas id="apiChart" height="100"></canvas>
+        <div class="support">
+          📞 Destek: <a href="https://t.me/capiyedek_support" target="_blank">@capiyedek_support</a>
+        </div>
+      </section>
+
+      <!-- TC Sorgu -->
+      <section id="tc" class="section">
+        <h2>🆔 TC Kimlik Sorgu</h2>
+        <p>TC numarasına ait temel bilgileri sorgulayabilirsiniz.</p>
+        <input type="text" id="tcInput" placeholder="TC Kimlik No" />
+        <button class="sorgula" onclick="handleQuery('tc')">Sorgula</button>
+        <div id="tcResult"></div>
+      </section>
+
+      <!-- Telefon Sorgu -->
+      <section id="tel" class="section">
+        <h2>📞 Telefon Sorgu</h2>
+        <p>Telefon numarasına kayıtlı kişi bilgilerini sorgulayın.</p>
+        <input type="text" id="telInput" placeholder="05xx xxx xx xx" />
+        <button class="sorgula" onclick="handleQuery('tel')">Sorgula</button>
+        <div id="telResult"></div>
+      </section>
+
+      <!-- İsimden Sorgu -->
+      <section id="isim" class="section">
+        <h2>📛 İsimden Sorgu</h2>
+        <p>Ad Soyad bilgisine göre kişi sorgusu yapabilirsiniz.</p>
+        <input type="text" id="isimInput" placeholder="Ad Soyad" />
+        <button class="sorgula" onclick="handleQuery('isim')">Sorgula</button>
+        <div id="isimResult"></div>
+      </section>
+
+      <!-- Adres Sorgu -->
+      <section id="adres" class="section">
+        <h2>📍 Adres Sorgu</h2>
+        <p>Adres bilgisine göre sorgulama yapabilirsiniz.</p>
+        <input type="text" id="adresInput" placeholder="Adres Bilgisi" />
+        <button class="sorgula" onclick="handleQuery('adres')">Sorgula</button>
+        <div id="adresResult"></div>
+      </section>
+
+      <!-- Plaka Sorgu -->
+      <section id="plaka" class="section">
+        <h2>🚗 Plaka Sorgu</h2>
+        <p>Plaka bilgisiyle araç bilgilerini sorgulayın.</p>
+        <input type="text" id="plakaInput" placeholder="Plaka Numarası" />
+        <button class="sorgula" onclick="handleQuery('plaka')">Sorgula</button>
+        <div id="plakaResult"></div>
+      </section>
+
+      <!-- E-Posta Sorgu -->
+      <section id="eposta" class="section">
+        <h2>✉️ E-Posta Sorgu</h2>
+        <p>E-posta adresiyle kullanıcı bilgilerini sorgulayın.</p>
+        <input type="text" id="epostaInput" placeholder="E-Posta Adresi" />
+        <button class="sorgula" onclick="handleQuery('eposta')">Sorgula</button>
+        <div id="epostaResult"></div>
+      </section>
+
+      <!-- Ad Soyad Sorgu -->
+      <section id="adsoyad" class="section">
+        <h2>👤 Ad Soyad Sorgu</h2>
+        <p>Ad, soyad ve il bilgisi ile kişi sorgulayabilirsiniz.</p>
+        <input type="text" id="adInput" placeholder="Ad" />
+        <input type="text" id="soyadInput" placeholder="Soyad" />
+        <input type="text" id="ilInput" placeholder="İl" />
+        <button class="sorgula" onclick="handleAdSoyadQuery()">Sorgula</button>
+        <div id="adsoyadResult"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Harici JavaScript -->
+  <script src="Database.js"></script>
+</body>
+</html>
