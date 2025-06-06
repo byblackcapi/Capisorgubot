@@ -69,27 +69,31 @@
   padding: 20px;
   position: fixed;
   top: 0;
-  left: -270px; /* biraz daha içeri çektik */
+  left: 0;
   height: 100%;
-  transition: left 0.3s ease;
+  transition: transform 0.3s ease;
   overflow-y: auto;
   z-index: 1000;
   display: flex;
   flex-direction: column;
+  transform: translateX(-100%); /* Tüm sidebar'ı ekran dışına at */
+  pointer-events: none; /* Tıklanamaz yap */
+  opacity: 0; /* Görünmez yap */
 
-  /* Her türlü görsel izi kaldırıyoruz */
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
   scrollbar-width: none;
-  opacity: 0; /* Kapalıyken görünmez */
-  pointer-events: none; /* Tıklanamaz olur */
 }
-/* Açıldığında görünür ve tıklanabilir olur */
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sidebar açıkken geri getir */
 .sidebar.open {
-  left: 0;
-  opacity: 1;
+  transform: translateX(0);
   pointer-events: auto;
+  opacity: 1;
 }
     .sidebar h3 {
       margin-bottom: 20px;
