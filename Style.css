@@ -1,0 +1,357 @@
+/* ==========================
+   Variables
+========================== */
+:root {
+  --bg-dark: #1a0033;
+  --bg-light: #f0f0f0;
+  --text-dark: #ffffff;
+  --text-light: #000000;
+  --card-bg-dark: rgba(255, 255, 255, 0.05);
+  --card-bg-light: rgba(0, 0, 0, 0.05);
+  --accent: #00ffff;
+  --accent-alt: #ff00ff;
+  --toast-bg: rgba(0, 0, 0, 0.7);
+  --toast-text: #fff;
+  --sidebar-width: 250px;
+  --transition: 0.3s ease;
+  --font-family: 'Segoe UI', sans-serif;
+}
+
+/* ==========================
+   Global Styles
+========================== */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  font-family: var(--font-family);
+  height: 100vh;
+  overflow: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+body.light {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+button {
+  font-family: inherit;
+}
+
+/* ==========================
+   Layout Wrappers
+========================== */
+.wrapper {
+  display: flex;
+  height: 100vh;
+  position: relative;
+}
+.sidebar {
+  width: var(--sidebar-width);
+  background: rgba(20, 20, 20, 0.95);
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: translateX(-100%);
+  transition: transform var(--transition);
+  overflow-y: auto;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+}
+.sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.content {
+  flex: 1;
+  margin-left: 0;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  transition: margin-left var(--transition);
+}
+/* Push content right when sidebar open on larger screens */
+@media (min-width: 769px) {
+  .sidebar.open ~ .content {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* ==========================
+   Menu Button & Toggles
+========================== */
+.menu-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: black;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+.menu-btn.light {
+  background: #000;
+  color: var(--accent);
+}
+.theme-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: black;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+.theme-toggle.light {
+  background: #000;
+  color: var(--accent);
+}
+
+/* ==========================
+   Sidebar Contents
+========================== */
+.sidebar h3 {
+  margin-bottom: 20px;
+  color: var(--accent);
+  font-size: 20px;
+}
+.sidebar a,
+.sidebar button.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  color: white;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 16px;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar.light a,
+.sidebar.light button.lang-toggle {
+  color: black;
+}
+.sidebar a:hover,
+.sidebar button.lang-toggle:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+.sidebar.light a:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.sidebar button.lang-toggle {
+  margin-top: auto;
+  background: var(--accent);
+  color: black;
+  font-size: 14px;
+  justify-content: center;
+}
+
+/* ==========================
+   Sections & Cards
+========================== */
+.section {
+  display: none;
+}
+.section.active {
+  display: block;
+  animation: fadeIn var(--transition) ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.card {
+  background: var(--card-bg-dark);
+  border: 1px solid var(--accent);
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 180px;
+  flex: 1;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+body.light .card {
+  background: var(--card-bg-light);
+  border: 1px solid #000;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+/* ==========================
+   Notices & Support
+========================== */
+.duyuru {
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 4px solid var(--accent-alt);
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+body.light .duyuru {
+  background: rgba(240, 240, 240, 0.6);
+  border-left: 4px solid #ff00ff;
+}
+.support {
+  margin-top: 20px;
+  font-size: 14px;
+}
+.support a {
+  color: var(--accent);
+}
+body.light .support a {
+  color: #000;
+}
+
+/* ==========================
+   Inputs & Buttons
+========================== */
+input,
+button.sorgula {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  transition: background var(--transition), color var(--transition);
+}
+input {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+body.light input {
+  background: rgba(0, 0, 0, 0.1);
+  color: black;
+}
+button.sorgula {
+  background: var(--accent);
+  color: black;
+  cursor: pointer;
+}
+button.sorgula:hover {
+  background: #00dddd;
+}
+
+/* ==========================
+   Toast Notification
+========================== */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  padding: 10px 20px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity var(--transition);
+  z-index: 1200;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* ==========================
+   Login Screen
+========================== */
+#login {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1300;
+}
+.login-box {
+  background: #1e1e1e;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--accent);
+  width: 320px;
+  text-align: center;
+  color: var(--text-dark);
+}
+.login-box.light {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+.login-box h2 {
+  margin-bottom: 20px;
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent);
+}
+#loader {
+  display: none;
+  margin-top: 20px;
+}
+
+/* ==========================
+   Responsive Adjustments
+========================== */
+@media (max-width: 768px) {
+  .content {
+    padding: 10px;
+  }
+  .login-box {
+    width: 90%;
+  }
+}
